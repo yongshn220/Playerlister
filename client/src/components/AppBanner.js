@@ -99,16 +99,8 @@ export default function AppBanner() {
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography                        
-                        variant="h4"
-                        noWrap
-                        component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}                        
-                    >
-                        <Link onClick={handleHouseClick} style={{ textDecoration: 'none', color: 'white' }} to='/'>⌂</Link>
-                    </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
-                    <Box sx={{ height: "90px", display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ height: "50px", display: { xs: 'none', md: 'flex' } }}>
                         <IconButton
                             size="large"
                             edge="end"
