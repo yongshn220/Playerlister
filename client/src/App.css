@@ -230,11 +230,19 @@ body {
   height: 50%;
 }
 
+#youtube-player.disabled {
+  width: 0%
+}
+
 #list-comments {
   position: absolute;
   width: 100%;
   height: 80%;
   background-color: blue;
+}
+
+#list-comments.disabled {
+  width: 0%
 }
 
 .list-card,

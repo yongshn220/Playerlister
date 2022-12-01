@@ -71,14 +71,13 @@ const HomeScreen = () => {
             </List>;
     }
 
-    let playlist = [
-        "mqmxkGjow1A",
-        "8RbXIMZmVv8",
-        "8UbNbor3OqQ"
-    ];
+    let playlist = [];
 
     let currentSong = 0;
 
+    let youtubeElement = <div></div>
+    let commentsElement = <div></div>
+    
     const playerOptions = {
         height: '390',
         width: '640',
@@ -87,6 +86,28 @@ const HomeScreen = () => {
             autoplay: 0,
         },
     };
+
+    if (!store.isCurrentListNull())
+    {
+        console.log("****************");
+        let songs = store.getCurrentListSongs();
+
+        console.log(songs);
+        playlist = songs.map((song) => (song.youTubeId))
+
+        console.log(playlist);
+        youtubeElement = 
+            <YouTube
+                id = "youtube-player"
+                videoId={playlist[currentSong]}
+                opts={playerOptions}
+                onReady={onPlayerReady}
+                onStateChange={onPlayerStateChange} />;
+
+        commentsElement = 
+            <div id="list-comments" className="disabled">
+            </div>
+    }
 
     function loadAndPlayCurrentSong(player) {
         let song = playlist[currentSong];
@@ -131,26 +152,13 @@ const HomeScreen = () => {
     }
 
     function onPlayerClick() {
-
+        document.getElementById("youtube-player").classList.remove("disabled");
+        document.getElementById("list-comments").classList.add("disabled");
     }
-
     function onCommentsClick() {
-
+        document.getElementById("youtube-player").classList.add("disabled");
+        document.getElementById("list-comments").classList.remove("disabled");
     }
-
-    let youtubeElement = 
-        <YouTube
-            id = "youtube-player"
-            videoId={playlist[currentSong]}
-            opts={playerOptions}
-            onReady={onPlayerReady}
-            onStateChange={onPlayerStateChange} />;
-
-    let commentsElement = 
-        <div id="list-comments">
-        </div>
-    let contentElement = youtubeElement;
-
 
     return (
         <div id="playlist-selector">
@@ -182,14 +190,15 @@ const HomeScreen = () => {
 
             <div id="list-content-box">
                 <div>
-                    <Button disabled={false} id='Player' onClick={onPlayerClick} variant="contained">
+                    <Button disabled={store.isCurrentListNull()} id='list-player-button' onClick={onPlayerClick} variant="contained">
                         Player
                     </Button>
-                    <Button disabled={false} id='Comments' onClick={onCommentsClick} variant="contained">
+                    <Button disabled={store.isCurrentListNull()} id='list-comments-button' onClick={onCommentsClick} variant="contained">
                         Comments
                     </Button>
                     
-                    {contentElement}
+                    {youtubeElement}
+                    {commentsElement}
                 </div>
             </div>
 

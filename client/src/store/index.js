@@ -31,7 +31,8 @@ export const GlobalStoreActionType = {
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     EDIT_SONG: "EDIT_SONG",
     REMOVE_SONG: "REMOVE_SONG",
-    HIDE_MODALS: "HIDE_MODALS"
+    HIDE_MODALS: "HIDE_MODALS",
+    RELOAD_STORE: "RELOAD_STORE"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -58,7 +59,7 @@ function GlobalStoreContextProvider(props) {
         newListCounter: 0,
         listNameActive: false,
         listIdMarkedForDeletion: null,
-        listMarkedForDeletion: null
+        listMarkedForDeletion: null,
     });
     const history = useHistory();
 
@@ -211,10 +212,46 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null
                 });
             }
+            case GlobalStoreActionType.RELOAD_STORE: {
+                return setStore({
+                    currentModal : store.currentModal,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion
+                })
+            }
             default:
                 return store;
         }
     }
+
+    //
+
+    store.reloadStore = function() {
+        storeReducer({
+            type: GlobalStoreActionType.RELOAD_STORE,
+            paload: null
+        })
+    }
+
+    store.isCurrentListNull = function() {
+        return (store.currentList == null)
+    }
+
+    store.getCurrentListSongs = function() {
+        if (store.currentList != null) {
+            return store.currentList.songs;
+        }
+        return [];
+    }
+
+
+    //
 
     store.tryAcessingOtherAccountPlaylist = function(){
         let id = "635f203d2e072037af2e6284";
