@@ -212,8 +212,6 @@ function ListCard(props) {
             />
     }
 
-    
-
     return (
         cardElement
     );

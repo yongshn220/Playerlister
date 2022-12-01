@@ -196,7 +196,6 @@ body {
   background-color: red;
 }
 
-
 #add-list-button {
   position: absolute;
   left: 50%;
@@ -215,6 +214,28 @@ body {
   overflow: scroll;
 }
 
+#list-content-box {
+  position:absolute;
+  top: 18%;
+  left: 62%;
+  width: 37%;
+  height: 70%;
+  background-color: yellow;
+}
+
+#youtube-player {
+  position: absolute;
+  margin-top: 1%;
+  width: 100%;
+  height: 50%;
+}
+
+#list-comments {
+  position: absolute;
+  width: 100%;
+  height: 80%;
+  background-color: blue;
+}
 
 .list-card,
 .selected-list-card,
