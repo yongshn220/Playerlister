@@ -69,8 +69,23 @@ body {
 }
 
 #edit-toolbar {
+  width: 100%;
   background-color: transparent;
-  transform: translate(41%, 0%);
+}
+#edit-toolbar #add-song-button,
+#undo-button,
+#redo-button,
+#close-button
+{
+  position:relative;
+}
+#edit-toolbar #publish-button {
+  position: relative;
+  margin-left: 30%;
+}
+#edit-toolbar #duplicate-button {
+  position: relative;
+  margin-left: 2%;
 }
 
 .playlister-button,

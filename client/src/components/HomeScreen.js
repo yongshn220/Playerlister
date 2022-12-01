@@ -40,6 +40,20 @@ const HomeScreen = () => {
     }
     let listCard = "";
     if (store) {
+        if (store.currentList != null)
+        {
+            store.idNamePairs.forEach((pair) => {
+                if (pair._id == store.currentList._id)
+                {
+                    pair.selected = true;
+                }
+                else 
+                {
+                    pair.selected = false;
+                }
+            })
+        }
+
         listCard = 
             <List sx={{width: '100%', mb:"20px" }}>
             {
@@ -47,7 +61,7 @@ const HomeScreen = () => {
                     <ListCard
                         key={pair._id}
                         idNamePair={pair}
-                        selected={false}
+                        selected={pair.selected}
                     />
                 ))
                 

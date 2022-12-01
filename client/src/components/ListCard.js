@@ -1,11 +1,20 @@
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
+import SongCard from './SongCard.js'
+import EditToolbar from './EditToolbar'
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
+import List from '@mui/material/List';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+import RedoIcon from '@mui/icons-material/Redo';
+import UndoIcon from '@mui/icons-material/Undo';
+import CloseIcon from '@mui/icons-material/HighlightOff';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -33,7 +42,7 @@ function ListCard(props) {
             store.setCurrentList(id);
         }
     }
-
+    
     function handleToggleEdit(event) {
         event.stopPropagation();
         toggleEdit();
@@ -65,6 +74,46 @@ function ListCard(props) {
         setText(event.target.value);
     }
 
+    function handleAddNewSong() {
+        store.addNewSong();
+    }
+    function handleUndo() {
+        store.undo();
+    }
+    function handleRedo() {
+        store.redo();
+    }
+    function handleClose() {
+        store.closeCurrentList();
+    }
+    function handlePublish() {
+        
+    }
+    function handleDuplicate() {
+
+    }
+    let editToolbar = 
+        <div id="edit-toolbar">
+            <Button disabled={!store.canAddNewSong()} id='add-song-button' onClick={handleAddNewSong} variant="contained">
+                <AddIcon />
+            </Button>
+            <Button disabled={!store.canUndo()} id='undo-button' onClick={handleUndo} variant="contained">
+                <UndoIcon />
+            </Button>
+            <Button disabled={!store.canRedo()} id='redo-button' onClick={handleRedo} variant="contained">
+                <RedoIcon />
+            </Button>
+            <Button disabled={!store.canClose()} id='close-button' onClick={handleClose} variant="contained">
+                <ArrowDropUpIcon />
+            </Button>
+            <Button disabled={false} id='publish-button' onClick={handlePublish} variant="contained">
+                Publish
+            </Button>
+            <Button disabled={false} id='duplicate-button' onClick={handleDuplicate} variant="contained">
+                Duplicate
+            </Button>
+        </div>
+    
     let selectClass = "unselected-list-card";
     if (selected) {
         selectClass = "selected-list-card";
@@ -73,32 +122,76 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
+
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{borderRadius:"25px", p: "10px", bgcolor: '#8000F00F', marginTop: '15px', display: 'flex', p: 1 }}
-            style={{transform:"translate(1%,0%)", width: '98%', fontSize: '48pt' }}
+            sx={{borderRadius:"10px", p: "10px", bgcolor: '#8000F00F', marginTop: '15px', display: 'flex', p: 1 }}
+            style={{transform:"translate(1%,0%)", width: '98%', fontSize: '20pt' }}
             button
             onClick={(event) => {
                 handleLoadList(event, idNamePair._id)
             }}
         >
+
             <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}} />
+                    <EditIcon style={{fontSize:'20pt'}} />
                 </IconButton>
             </Box>
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)
                     }} aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'48pt'}} />
+                    <DeleteIcon style={{fontSize:'20pt'}} />
                 </IconButton>
             </Box>
         </ListItem>
+    if (selected && store.currentList != null) {
+        cardElement = 
+        <ListItem
+            id={idNamePair._id}
+            key={idNamePair._id}
+            sx={{borderRadius:"10px", p: "10px", bgcolor: '#8000F00F', marginTop: '15px', display: 'flex',  p: 1 }}
+            style={{maxHeight: 500, flexDirection: 'column', transform:"translate(1%,0%)", width: '98%', fontSize: '20pt' }}
+            button
+        >   
+            <Box sx={{display: "flex", p: 1}} style={{flexDirection: 'row', width: '98%',}}>
+                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                <Box sx={{ p: 1}}>
+                    <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                        <EditIcon style={{fontSize:'20pt'}} />
+                    </IconButton>
+                </Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton onClick={(event) => {
+                            handleDeleteList(event, idNamePair._id)
+                        }} aria-label='delete'>
+                        <DeleteIcon style={{fontSize:'20pt'}} />
+                    </IconButton>
+                </Box>
+            </Box>
 
+            <List 
+                id="playlist-cards" 
+                sx={{overflow: 'scroll', height: '87%', width: '100%', bgcolor: '#8000F00F'}}
+            >
+                {
+                    store.currentList.songs.map((song, index) => (
+                        <SongCard
+                            id={'playlist-song-' + (index)}
+                            key={'playlist-song-' + (index)}
+                            index={index}
+                            song={song}
+                        />
+                    ))  
+                }
+            </List> 
+            {editToolbar}
+        </ListItem>
+    }
     if (editActive) {
         cardElement =
             <TextField
@@ -118,6 +211,9 @@ function ListCard(props) {
                 autoFocus
             />
     }
+
+    
+
     return (
         cardElement
     );

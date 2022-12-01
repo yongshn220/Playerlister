@@ -277,7 +277,7 @@ function GlobalStoreContextProvider(props) {
             payload: {}
         });
         tps.clearAllTransactions();
-        history.push("/");
+        // history.push("/");
     }
 
     // THIS FUNCTION CREATES A NEW LIST
@@ -388,6 +388,7 @@ function GlobalStoreContextProvider(props) {
         return store.currentModal === CurrentModal.ERROR;
     }
 
+
     // THE FOLLOWING 8 FUNCTIONS ARE FOR COORDINATING THE UPDATING
     // OF A LIST, WHICH INCLUDES DEALING WITH THE TRANSACTION STACK. THE
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
@@ -404,7 +405,7 @@ function GlobalStoreContextProvider(props) {
                         type: GlobalStoreActionType.SET_CURRENT_LIST,
                         payload: playlist
                     });
-                    history.push("/playlist/" + playlist._id);
+                    // history.push("/playlist/" + playlist._id);
                 }
             }
         }
