@@ -2,6 +2,8 @@ import React, { useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
+import MUIEditSongModal from './MUIEditSongModal'
+import MUIRemoveSongModal from './MUIRemoveSongModal'
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
@@ -21,6 +23,7 @@ const HomeScreen = () => {
         store.loadIdNamePairs();
     }, []);
 
+// EVENT HANDLER ---------------------------------------------------------
     function handleCreateNewList() {
         store.createNewList();
     }
@@ -40,6 +43,9 @@ const HomeScreen = () => {
     {
         console.log("Search");
     }
+    
+// LISTCARD SETTING-------------------------------------------------------
+
     let listCard = "";
     if (store) {
         if (store.currentList != null)
@@ -71,6 +77,7 @@ const HomeScreen = () => {
             </List>;
     }
 
+// YOUTUBE PLAYER AND COMMENT --------------------------------------------
     let playlist = [];
 
     let currentSong = 0;
@@ -87,9 +94,8 @@ const HomeScreen = () => {
         },
     };
 
-    if (!store.isCurrentListNull())
+    if (store.hasSongsInCurrentList())
     {
-        console.log("****************");
         let songs = store.getCurrentListSongs();
 
         console.log(songs);
@@ -160,6 +166,16 @@ const HomeScreen = () => {
         document.getElementById("list-comments").classList.remove("disabled");
     }
 
+// MODAL --------------------------------------------------------
+    let modalJSX = "";
+    if (store.isEditSongModalOpen()) {
+        modalJSX = <MUIEditSongModal />;
+    }
+    else if (store.isRemoveSongModalOpen()) {
+        modalJSX = <MUIRemoveSongModal />;
+    }
+
+// RETURN --------------------------------------------------------
     return (
         <div id="playlist-selector">
             <div id="list-selector-heading">
@@ -210,7 +226,7 @@ const HomeScreen = () => {
                 >
                     <AddIcon />
             </Fab>
-
+            { modalJSX }
         </div>)
 }
 

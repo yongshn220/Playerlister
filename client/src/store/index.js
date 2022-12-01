@@ -73,6 +73,7 @@ function GlobalStoreContextProvider(props) {
     // HANDLE EVERY TYPE OF STATE CHANGE
     const storeReducer = (action) => {
         const { type, payload } = action;
+        console.log(type);
         switch (type) {
             // LIST UPDATE OF ITS NAME
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
@@ -107,7 +108,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    currentList: payload,
+                    currentList: null,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter + 1,
@@ -249,8 +250,12 @@ function GlobalStoreContextProvider(props) {
         }
         return [];
     }
-
-
+    store.hasSongsInCurrentList = function() {
+        if (store.currentList != null) {
+            return store.currentList.songs.length > 0;
+        }
+        return false;
+    }
     //
 
     store.tryAcessingOtherAccountPlaylist = function(){
@@ -320,19 +325,11 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
-        const response = await api.createPlaylist(newListName, [], auth.user.email);
-        console.log("createNewList response: " + response);
+        const response = await api.createPlaylist(newListName, [], auth.user.firstName, auth.user.lastName, auth.user.email);
         if (response.status === 201) {
             tps.clearAllTransactions();
             let newList = response.data.playlist;
-            storeReducer({
-                type: GlobalStoreActionType.CREATE_NEW_LIST,
-                payload: newList
-            }
-            );
-
-            // IF IT'S A VALID LIST THEN LET'S START EDITING IT
-            history.push("/playlist/" + newList._id);
+            store.loadIdNamePairs();
         }
         else {
             console.log("API FAILED TO CREATE A NEW LIST");
@@ -367,6 +364,7 @@ function GlobalStoreContextProvider(props) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 let playlist = response.data.playlist;
+                console.log(playlist);
                 storeReducer({
                     type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
                     payload: {id: id, playlist: playlist}
@@ -379,6 +377,7 @@ function GlobalStoreContextProvider(props) {
         async function processDelete(id) {
             let response = await api.deletePlaylistById(id);
             store.loadIdNamePairs();
+            console.log(response);
             if (response.data.success) {
                 history.push("/");
             }
@@ -394,6 +393,7 @@ function GlobalStoreContextProvider(props) {
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
 
     store.showEditSongModal = (songIndex, songToEdit) => {
+        console.log("showeditsong");
         storeReducer({
             type: GlobalStoreActionType.EDIT_SONG,
             payload: {currentSongIndex: songIndex, currentSong: songToEdit}
