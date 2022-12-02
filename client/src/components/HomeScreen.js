@@ -55,7 +55,24 @@ const HomeScreen = () => {
         const formData = new FormData(event.currentTarget);
         store.searchPublishedPlaylist(formData.get('search-playlist'));
     }
-    
+    function onPlayerPauseClick() {
+        if(youtubeEventTarget){
+            youtubeEventTarget.stopVideo();
+        }
+    }
+    function onPlayerPlayClick() {
+        if (youtubeEventTarget) {
+            youtubeEventTarget.playVideo();
+        }
+    }
+    function onMoveToFirstSongClick(){
+        currentSong = 0;
+        loadAndPlayCurrentSong(youtubeEventTarget);
+    }
+    function onMoveToLastSongClick(){
+        currentSong = store.getCurrentListSongs().length - 1;
+        loadAndPlayCurrentSong(youtubeEventTarget);
+    }
 // LISTCARD SETTING-------------------------------------------------------
 
     let listCard = "";
@@ -91,6 +108,7 @@ const HomeScreen = () => {
     let youtubeElement = <div></div>
     let commentsElement = <div></div>
     
+    let youtubeEventTarget = null;
     const playerOptions = {
         height: '390',
         width: '640',
@@ -122,22 +140,22 @@ const HomeScreen = () => {
                 </div>
                 <div id="youtube-player-controller">
                     <Button disabled={store.isCurrentListNull()} onClick={onPlayerClick}>
-                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                        <IconButton  onClick={onMoveToFirstSongClick} aria-label='edit'>
                             <FastRewindRoundedIcon style={{fontSize:'25pt'}} />
                         </IconButton>
                     </Button>
                     <Button disabled={store.isCurrentListNull()} onClick={onPlayerClick}>
-                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                        <IconButton  onClick={onPlayerPlayClick} aria-label='edit'>
                             <PlayArrowRoundedIcon style={{fontSize:'25pt'}} />
                         </IconButton>
                     </Button>
                     <Button disabled={store.isCurrentListNull()} onClick={onPlayerClick}>
-                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                        <IconButton  onClick={onPlayerPauseClick} aria-label='edit'>
                             <StopRoundedIcon style={{fontSize:'25pt'}} />
                         </IconButton>
                     </Button>
                     <Button disabled={store.isCurrentListNull()} onClick={onPlayerClick}>
-                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                        <IconButton  onClick={onMoveToLastSongClick} aria-label='edit'>
                             <FastForwardRoundedIcon style={{fontSize:'25pt'}} />
                         </IconButton>
                     </Button>
@@ -159,7 +177,7 @@ const HomeScreen = () => {
         document.getElementById("youtube-player-info").innerHTML = 
             `<ul>
                 <li>Playlist: ${store.currentList.name}</li>
-                <li>Songs #: ${store.currentList.songs.length}</li>
+                <li>Songs #: ${currentSong + 1}</li>
                 <li>Title: ${store.currentList.songs[currentSong].title}</li>
                 <li>Artilst: ${store.currentList.songs[currentSong].artist}</li> 
             </ul>`
@@ -172,7 +190,10 @@ const HomeScreen = () => {
 
     function onPlayerReady(event) {
         loadAndPlayCurrentSong(event.target);
+        console.log("@@@@@@@@@@@@@@");
+        console.log(event.target);
         event.target.playVideo();
+        youtubeEventTarget = event.target;
     }
 
     function onPlayerStateChange(event) {
