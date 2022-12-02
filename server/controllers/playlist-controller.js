@@ -101,13 +101,16 @@ getPlaylistById = async (req, res) => {
             return res.status(400).json({ success: false, error: err });
         }
         console.log("Found list: " + JSON.stringify(list));
-
+        
+        
         // DOES THIS LIST BELONG TO THIS USER?
         async function asyncFindUser(list) {
             await User.findOne({ email: list.ownerEmail }, (err, user) => {
                 console.log("user._id: " + user._id);
                 console.log("req.userId: " + req.userId);
-                if (user._id == req.userId) {
+                console.log(list);
+                console.log(list.published);
+                if (user._id == req.userId || list.published) {
                     console.log("correct user!");
                     return res.status(200).json({ success: true, playlist: list })
                 }
