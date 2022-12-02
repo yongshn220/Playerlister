@@ -88,6 +88,7 @@ function GlobalStoreContextProvider(props) {
     const storeReducer = (action) => {
         const { type, payload } = action;
         console.log(type);
+        console.log(store.currentHomeState);
         switch (type) {
             // LIST UPDATE OF ITS NAME
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
@@ -157,7 +158,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     publishedPairs: store.publishedPairs,
-                    idNamePairs: payload,
+                    idNamePairs: payload.pairs,
                     currentList: null,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -165,7 +166,7 @@ function GlobalStoreContextProvider(props) {
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
-                    currentHomeState: store.currentHomeState,
+                    currentHomeState: payload.state,
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -310,6 +311,7 @@ function GlobalStoreContextProvider(props) {
             }
 
             case GlobalStoreActionType.SHOW_ALL_USER: {
+                console.log("SHOW ALL USER IN");
                 return setStore({
                     currentModal : store.currentModal,
                     publishedPairs: store.publishedPairs,
@@ -414,6 +416,14 @@ function GlobalStoreContextProvider(props) {
         })
     }
 
+    store.searchPublishedPlaylist = function(inputString) {
+        console.log("IN0");
+        console.log(store.currentHomeState);
+        if (store.currentHomeState == CurrentHomeState.ALL_USER) {
+            console.log("IN");
+            store.loadPublishedPairsByTitle(inputString);
+        }
+    }
     
 
     //
@@ -505,7 +515,7 @@ function GlobalStoreContextProvider(props) {
                 console.log(pairsArray);
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                    payload: pairsArray
+                    payload: {pairs: pairsArray, state: CurrentHomeState.HOME}
                 });
             }
             else {
@@ -523,11 +533,25 @@ function GlobalStoreContextProvider(props) {
                 console.log(pairsArray);
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                    payload: pairsArray
+                    payload: {pairs: pairsArray, state: CurrentHomeState.ALL_USER}
                 });
             }
         }
         asyncLoadPublishedPairs();
+    }
+
+    store.loadPublishedPairsByTitle = function (title) {
+        async function aysncLoadPublishedPairsByTitle() {
+            const response = await api.getPublishedplaylistPairsByTitle(title);
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: {pairs: pairsArray, state: CurrentHomeState.ALL_USER}
+                });
+            }
+        }
+        aysncLoadPublishedPairsByTitle();
     }
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION

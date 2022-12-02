@@ -166,7 +166,6 @@ body {
 #list-selector-heading-center{
   flex: 2 1 auto;
   height: 100%;
-  background-color: green;
 }
 #list-selector-heading-right{
   flex: 1 1 auto;

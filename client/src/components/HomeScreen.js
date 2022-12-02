@@ -10,6 +10,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
 import Box from '@mui/material/Box'
+import TextField from '@mui/material/TextField';
 import YouTube from 'react-youtube';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -45,9 +46,10 @@ const HomeScreen = () => {
     {
         store.showUserView();
     }
-    function handleOnSearch()
-    {
-        console.log("Search");
+    const handleOnSearch = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        store.searchPublishedPlaylist(formData.get('search-playlist'));
     }
     
 // LISTCARD SETTING-------------------------------------------------------
@@ -200,8 +202,16 @@ const HomeScreen = () => {
                     </Box>
                 </div>
                 <div id="list-selector-heading-center">  
-                    <input placeholder="Search..."></input>
-                    <button onClick={handleOnSearch}>Search</button>
+
+                    <Box
+                        component="form"
+                        sx={{'& > :not(style)': { m: 1, width: '25ch' },}}
+                        noValidate
+                        autoComplete="off"
+                        onSubmit={handleOnSearch}
+                    >
+                        <TextField id="search-playlist" name="search-playlist" label="Search" variant="outlined" />
+                    </Box>
                 </div>
                 <div id="list-selector-heading-right">
                     test2
