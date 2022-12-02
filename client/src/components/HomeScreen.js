@@ -18,6 +18,10 @@ import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import SwitchAccountRoundedIcon from '@mui/icons-material/SwitchAccountRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
+import FastRewindRoundedIcon from '@mui/icons-material/FastRewindRounded';
+import FastForwardRoundedIcon from '@mui/icons-material/FastForwardRounded';
+import StopRoundedIcon from '@mui/icons-material/StopRounded';
+import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -104,13 +108,43 @@ const HomeScreen = () => {
         playlist = songs.map((song) => (song.youTubeId))
 
         console.log(playlist);
+        console.log("!!!!!!!!!!!!!!");
         youtubeElement = 
-            <YouTube
-                id = "youtube-player"
-                videoId={playlist[currentSong]}
-                opts={playerOptions}
-                onReady={onPlayerReady}
-                onStateChange={onPlayerStateChange} />;
+            <Box>
+                <YouTube
+                    id = "youtube-player"
+                    videoId={playlist[currentSong]}
+                    opts={playerOptions}
+                    onReady={onPlayerReady}
+                    onStateChange={onPlayerStateChange} />;
+                <div id="youtube-player-info">
+                
+                </div>
+                <div id="youtube-player-controller">
+                    <Button disabled={store.isCurrentListNull()} onClick={onPlayerClick}>
+                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                            <FastRewindRoundedIcon style={{fontSize:'25pt'}} />
+                        </IconButton>
+                    </Button>
+                    <Button disabled={store.isCurrentListNull()} onClick={onPlayerClick}>
+                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                            <PlayArrowRoundedIcon style={{fontSize:'25pt'}} />
+                        </IconButton>
+                    </Button>
+                    <Button disabled={store.isCurrentListNull()} onClick={onPlayerClick}>
+                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                            <StopRoundedIcon style={{fontSize:'25pt'}} />
+                        </IconButton>
+                    </Button>
+                    <Button disabled={store.isCurrentListNull()} onClick={onPlayerClick}>
+                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                            <FastForwardRoundedIcon style={{fontSize:'25pt'}} />
+                        </IconButton>
+                    </Button>
+                </div>
+            </Box>
+            
+                
 
         commentsElement = 
             <div id="list-comments" className="disabled">
@@ -118,9 +152,17 @@ const HomeScreen = () => {
     }
 
     function loadAndPlayCurrentSong(player) {
+        console.log("load new cong");
         let song = playlist[currentSong];
         player.loadVideoById(song);
         player.playVideo();
+        document.getElementById("youtube-player-info").innerHTML = 
+            `<ul>
+                <li>Playlist: ${store.currentList.name}</li>
+                <li>Songs #: ${store.currentList.songs.length}</li>
+                <li>Title: ${store.currentList.songs[currentSong].title}</li>
+                <li>Artilst: ${store.currentList.songs[currentSong].artist}</li> 
+            </ul>`
     }
 
     function incSong() {
@@ -236,6 +278,8 @@ const HomeScreen = () => {
                     
                     {youtubeElement}
                     {commentsElement}
+
+                    
                 </div>
             </div>
 

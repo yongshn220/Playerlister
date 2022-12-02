@@ -101,6 +101,7 @@ function ListCard(props) {
                 key={'playlist-song-' + (index)}
                 index={index}
                 song={song}
+                published={published}
             />
         ))  
     }
@@ -182,21 +183,26 @@ function ListCard(props) {
         </Box>
     }
 
-    let editButtonElement = 
-        <Box sx={{ p: 1 }}>
-            <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                <EditIcon style={{fontSize:'20pt'}} />
-            </IconButton>
-        </Box>
+    let editButtonElement = null
+    let deleteButtonElement = null
+    if (store.isScreenHomeView()) {
+        editButtonElement = 
+            <Box sx={{ p: 1 }}>
+                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                    <EditIcon style={{fontSize:'20pt'}} />
+                </IconButton>
+            </Box>
 
-    let deleteButtonElement = 
-        <Box sx={{ p: 1 }}>
-            <IconButton onClick={(event) => {
-                    handleDeleteList(event, idNamePair._id)
-                }} aria-label='delete'>
-                <DeleteIcon style={{fontSize:'20pt'}} />
-            </IconButton>
-        </Box>
+        deleteButtonElement = 
+            <Box sx={{ p: 1 }}>
+                <IconButton onClick={(event) => {
+                        handleDeleteList(event, idNamePair._id)
+                    }} aria-label='delete'>
+                    <DeleteIcon style={{fontSize:'20pt'}} />
+                </IconButton>
+            </Box>
+    }
+
 
 // LIKES and DISLIKES ELEMENTS
     let likeButtonAndCount = null
@@ -257,7 +263,7 @@ function ListCard(props) {
 
             <List 
                 id="playlist-cards" 
-                sx={{overflow: 'scroll', height: '87%', width: '100%', bgcolor: '#8000F00F'}}
+                sx={{borderRadius: "10px", overflow: 'scroll', height: '87%', width: '100%'}}
             >
                 {loadSongs()}
             </List> 
