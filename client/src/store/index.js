@@ -332,8 +332,8 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : store.currentModal,
                     publishedPairs: store.publishedPairs,
-                    idNamePairs: store.idNamePairs,
-                    currentList: store.currentList,
+                    idNamePairs: [],
+                    currentList: null,
                     currentSongIndex: store.currentSongIndex,
                     currentSong: store.currentSong,
                     newListCounter: store.newListCounter,
@@ -402,7 +402,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.showAllUserView = function() {
-        store.loadPublishedPairs();
+        store.loadPublishedPairs(CurrentHomeState.ALL_USER);
         storeReducer({
             type: GlobalStoreActionType.SHOW_ALL_USER,
             payload: null
@@ -422,6 +422,9 @@ function GlobalStoreContextProvider(props) {
         if (store.currentHomeState == CurrentHomeState.ALL_USER) {
             console.log("IN");
             store.loadPublishedPairsByTitle(inputString);
+        }
+        if (store.currentHomeState == CurrentHomeState.USER) {
+            store.loadPublishedPairsByOwnerName(inputString);
         }
     }
     
@@ -552,6 +555,22 @@ function GlobalStoreContextProvider(props) {
             }
         }
         aysncLoadPublishedPairsByTitle();
+    }
+
+    store.loadPublishedPairsByOwnerName = function (name) {
+        console.log("(1)");
+        console.log(name);
+        async function aysncLoadPublishedPairsByOwnerName() {
+            const response = await api.getPublishedPairsByOwnerName(name);
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: {pairs: pairsArray, state: CurrentHomeState.USER}
+                });
+            }
+        } 
+        aysncLoadPublishedPairsByOwnerName();
     }
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
