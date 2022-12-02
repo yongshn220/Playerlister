@@ -161,28 +161,6 @@ body {
   display: flex;
   justify-content: flex-start;
   height: 100%;
-  background-color: red;
-}
-
-#list-selector-heading-left #lshl-home {
-  margin: 1%;
-  width: 20%;
-  height: 80%;
-  background-color: blue;
-}
-#list-selector-heading-left #lshl-all {
-
-  margin: 1%;
-  width: 20%;
-  height: 80%;
-  background-color: yellow;
-}
-#list-selector-heading-left #lshl-user {
-
-  margin: 1%;
-  width: 20%;
-  height: 80%;
-  background-color: purple;
 }
 
 #list-selector-heading-center{

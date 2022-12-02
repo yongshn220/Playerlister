@@ -32,7 +32,12 @@ export const GlobalStoreActionType = {
     EDIT_SONG: "EDIT_SONG",
     REMOVE_SONG: "REMOVE_SONG",
     HIDE_MODALS: "HIDE_MODALS",
-    RELOAD_STORE: "RELOAD_STORE"
+    RELOAD_STORE: "RELOAD_STORE",
+    PUBLISH_LIST: "PUBLISH_LIST",
+    SHOW_HOME: "SHOW_HOME",
+    SHOW_ALL_USER: "SHOW_ALL_USER",
+    SHOW_USER: "SHOW_USER",
+    LOAD_PUBLISHED_PAIRS: "LOAD_PUBLISHED_PAIRS",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -43,7 +48,14 @@ const CurrentModal = {
     DELETE_LIST : "DELETE_LIST",
     EDIT_SONG : "EDIT_SONG",
     REMOVE_SONG : "REMOVE_SONG",
-    ERROR : "ERROR"
+    ERROR : "ERROR",
+    PUBLISH_LIST : "PUBLISH_LIST",
+}
+
+const CurrentHomeState = {
+    HOME : "HOME",
+    ALL_USER : "ALL_USER",
+    USER : "USER",
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -52,6 +64,7 @@ function GlobalStoreContextProvider(props) {
     // THESE ARE ALL THE THINGS OUR DATA STORE WILL MANAGE
     const [store, setStore] = useState({
         currentModal : CurrentModal.NONE,
+        publishedPairs: [],
         idNamePairs: [],
         currentList: null,
         currentSongIndex : -1,
@@ -60,6 +73,7 @@ function GlobalStoreContextProvider(props) {
         listNameActive: false,
         listIdMarkedForDeletion: null,
         listMarkedForDeletion: null,
+        currentHomeState: CurrentHomeState.HOME,
     });
     const history = useHistory();
 
@@ -79,6 +93,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: payload.idNamePairs,
                     currentList: payload.playlist,
                     currentSongIndex: -1,
@@ -86,13 +101,15 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
                 });
             }
             // STOP EDITING THE CURRENT LIST
             case GlobalStoreActionType.CLOSE_CURRENT_LIST: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: store.idNamePairs,
                     currentList: null,
                     currentSongIndex: -1,
@@ -100,13 +117,15 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
                 })
             }
             // CREATE A NEW LIST
             case GlobalStoreActionType.CREATE_NEW_LIST: {                
                 return setStore({
                     currentModal : CurrentModal.NONE,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: store.idNamePairs,
                     currentList: null,
                     currentSongIndex: -1,
@@ -114,13 +133,30 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter + 1,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
                 })
+            }
+            case GlobalStoreActionType.LOAD_PUBLISHED_PAIRS: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    publishedPairs: payload,
+                    idNamePairs: store.idNamePairs,
+                    currentList: null,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
+                });
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: payload,
                     currentList: null,
                     currentSongIndex: -1,
@@ -128,13 +164,15 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
                 });
             }
             // PREPARE TO DELETE A LIST
             case GlobalStoreActionType.MARK_LIST_FOR_DELETION: {
                 return setStore({
                     currentModal : CurrentModal.DELETE_LIST,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: store.idNamePairs,
                     currentList: null,
                     currentSongIndex: -1,
@@ -142,13 +180,15 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: payload.id,
-                    listMarkedForDeletion: payload.playlist
+                    listMarkedForDeletion: payload.playlist,
+                    currentHomeState: store.currentHomeState,
                 });
             }
             // UPDATE A LIST
             case GlobalStoreActionType.SET_CURRENT_LIST: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     currentSongIndex: -1,
@@ -156,13 +196,15 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
                 });
             }
             // START EDITING A LIST NAME
             case GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
                     currentSongIndex: -1,
@@ -170,13 +212,15 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: true,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
                 });
             }
             // 
             case GlobalStoreActionType.EDIT_SONG: {
                 return setStore({
                     currentModal : CurrentModal.EDIT_SONG,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
                     currentSongIndex: payload.currentSongIndex,
@@ -184,12 +228,14 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
                 });
             }
             case GlobalStoreActionType.REMOVE_SONG: {
                 return setStore({
                     currentModal : CurrentModal.REMOVE_SONG,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
                     currentSongIndex: payload.currentSongIndex,
@@ -197,12 +243,14 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
                 });
             }
             case GlobalStoreActionType.HIDE_MODALS: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
                     currentSongIndex: -1,
@@ -210,12 +258,14 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    currentHomeState: store.currentHomeState,
                 });
             }
             case GlobalStoreActionType.RELOAD_STORE: {
                 return setStore({
                     currentModal : store.currentModal,
+                    publishedPairs: store.publishedPairs,
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
                     currentSongIndex: store.currentSongIndex,
@@ -223,7 +273,72 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     listNameActive: store.listNameActive,
                     listIdMarkedForDeletion: store.listIdMarkedForDeletion,
-                    listMarkedForDeletion: store.listMarkedForDeletion
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    currentHomeState: store.currentHomeState,
+                })
+            }
+            case GlobalStoreActionType.PUBLISH_LIST: {
+                return setStore({
+                    currentModal : CurrentModal.PUBLISH_LIST,
+                    publishedPairs: store.publishedPairs,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    currentHomeState: store.currentHomeState,
+                })
+            }
+
+            case GlobalStoreActionType.SHOW_HOME: {
+                return setStore({
+                    currentModal : store.currentModal,
+                    publishedPairs: store.publishedPairs,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    currentHomeState: CurrentHomeState.HOME,
+                })
+            }
+
+            case GlobalStoreActionType.SHOW_ALL_USER: {
+                return setStore({
+                    currentModal : store.currentModal,
+                    publishedPairs: store.publishedPairs,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    currentHomeState: CurrentHomeState.ALL_USER,
+                })
+
+            }
+
+            case GlobalStoreActionType.SHOW_USER: {
+                return setStore({
+                    currentModal : store.currentModal,
+                    publishedPairs: store.publishedPairs,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion,
+                    currentHomeState: CurrentHomeState.USER,
                 })
             }
             default:
@@ -256,6 +371,51 @@ function GlobalStoreContextProvider(props) {
         }
         return false;
     }
+
+    store.showPublishListModal = function() {
+        storeReducer({
+            type: GlobalStoreActionType.PUBLISH_LIST,
+            payload: null
+        })
+    }
+
+    store.publishList = function() {
+        if (store.currentList)
+        {
+            let list = store.currentList;
+            list.published = true;
+            let today = new Date();
+            list.publishedDate = today.toLocaleDateString("en-US");
+        }
+        store.updateCurrentList();
+        store.loadIdNamePairs();
+    }
+
+    store.showHomeView = function() {
+        store.loadIdNamePairs();
+        storeReducer({
+            type: GlobalStoreActionType.SHOW_HOME,
+            payload: null
+        })
+    }
+
+    store.showAllUserView = function() {
+        store.loadPublishedPairs();
+        storeReducer({
+            type: GlobalStoreActionType.SHOW_ALL_USER,
+            payload: null
+        })
+    }
+
+    store.showUserView = function() {
+        storeReducer({
+            type: GlobalStoreActionType.SHOW_USER,
+            payload: null
+        })
+    }
+
+    
+
     //
 
     store.tryAcessingOtherAccountPlaylist = function(){
@@ -355,6 +515,21 @@ function GlobalStoreContextProvider(props) {
         asyncLoadIdNamePairs();
     }
 
+    store.loadPublishedPairs = function () {
+        async function asyncLoadPublishedPairs() {
+            const response = await api.getPublishedPlaylistPairs();
+            if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                console.log(pairsArray);
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: pairsArray
+                });
+            }
+        }
+        asyncLoadPublishedPairs();
+    }
+
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
     // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
     // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
@@ -423,6 +598,18 @@ function GlobalStoreContextProvider(props) {
     }
     store.isErrorModalOpen = () => {
         return store.currentModal === CurrentModal.ERROR;
+    }
+    store.isPublishListModalOpen = () => {
+        return store.currentModal === CurrentModal.PUBLISH_LIST;
+    }
+    store.isScreenHomeView = () => {
+        return store.currentHomeState === CurrentHomeState.HOME; 
+    }
+    store.isScreenAllUserView = () => {
+        return store.currentHomeState === CurrentHomeState.ALL_USER;
+    }
+    store.isScreenUserView = () => {
+        return store.currentHomeState === CurrentHomeState.USER;
     }
 
 
@@ -547,6 +734,7 @@ function GlobalStoreContextProvider(props) {
     }
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
+            console.log(store.currentList);
             const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
             if (response.data.success) {
                 storeReducer({

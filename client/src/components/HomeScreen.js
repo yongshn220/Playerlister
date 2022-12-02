@@ -4,6 +4,7 @@ import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
 import MUIEditSongModal from './MUIEditSongModal'
 import MUIRemoveSongModal from './MUIRemoveSongModal'
+import MUIPublishListModal from './MUIPublishListModal'
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
@@ -11,6 +12,11 @@ import List from '@mui/material/List';
 import Box from '@mui/material/Box'
 import YouTube from 'react-youtube';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import SwitchAccountRoundedIcon from '@mui/icons-material/SwitchAccountRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -29,15 +35,15 @@ const HomeScreen = () => {
     }
     function handleHomeClick()
     {
-        console.log("Home")
+        store.showHomeView();
     }
     function handleAllClick()
     {
-        console.log("All")
+        store.showAllUserView();
     }
     function handleUserClick()
     {
-        console.log("user")
+        store.showUserView();
     }
     function handleOnSearch()
     {
@@ -51,14 +57,8 @@ const HomeScreen = () => {
         if (store.currentList != null)
         {
             store.idNamePairs.forEach((pair) => {
-                if (pair._id == store.currentList._id)
-                {
-                    pair.selected = true;
-                }
-                else 
-                {
-                    pair.selected = false;
-                }
+                if (pair._id == store.currentList._id) pair.selected = true;
+                else pair.selected = false;
             })
         }
 
@@ -70,9 +70,9 @@ const HomeScreen = () => {
                         key={pair._id}
                         idNamePair={pair}
                         selected={pair.selected}
+                        published={pair.published}
                     />
                 ))
-                
             }
             </List>;
     }
@@ -174,19 +174,30 @@ const HomeScreen = () => {
     else if (store.isRemoveSongModalOpen()) {
         modalJSX = <MUIRemoveSongModal />;
     }
+    else if (store.isPublishListModalOpen()) {
+        modalJSX = <MUIPublishListModal />;
+    }
 
 // RETURN --------------------------------------------------------
     return (
         <div id="playlist-selector">
             <div id="list-selector-heading">
                 <div id="list-selector-heading-left">
-                    
-                    <div id="lshl-home" onClick={handleHomeClick}>
-                    </div>
-                    <div id="lshl-all" onClick={handleAllClick}>
-                    </div>
-                    <div id="lshl-user" onClick={handleUserClick}>
-                    </div>
+                    <Box sx={{ p: 1}}>
+                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                            <HomeRoundedIcon style={{fontSize:'25pt'}} />
+                        </IconButton>
+                    </Box>
+                    <Box sx={{ p: 1}}>
+                        <IconButton  onClick={handleAllClick} aria-label='edit'>
+                            <SwitchAccountRoundedIcon style={{fontSize:'25pt'}} />
+                        </IconButton>
+                    </Box>
+                    <Box sx={{ p: 1}}>
+                        <IconButton  onClick={handleUserClick} aria-label='edit'>
+                            <PersonRoundedIcon style={{fontSize:'25pt'}} />
+                        </IconButton>
+                    </Box>
                 </div>
                 <div id="list-selector-heading-center">  
                     <input placeholder="Search..."></input>
