@@ -474,6 +474,22 @@ function GlobalStoreContextProvider(props) {
             store.updateList(id, store.idNamePairs[ind]);
         }
     }
+    store.increaseListenList = function(id) {
+        let ind = -1
+        for (let i = 0; i < store.idNamePairs.length; i++) {
+            if (store.idNamePairs[i]._id == id) {
+                ind = i;
+                store.idNamePairs[i].listens += 1;
+                break;
+            }
+        }
+        async function asyncUpdateListNoReload() {
+            if (ind != -1) {
+                const response = await api.updatePlaylistById(id, store.idNamePairs[ind]);
+            }
+        }
+        asyncUpdateListNoReload();
+    }
 
     store.updateList = function(id, list) {
         async function asyncUpdateList() {
@@ -493,7 +509,7 @@ function GlobalStoreContextProvider(props) {
 
     store.duplicateList = function(list) {
         async function asyncDuplicateList(){
-            const response = await api.createPlaylist(list.name, list.song, auth.user.firstName, auth.user.lastName, auth.user.email);
+            const response = await api.createPlaylist(list.name, list.songs, auth.user.firstName, auth.user.lastName, auth.user.email);
             if (response.status === 201) {
                 tps.clearAllTransactions();
                 let newList = response.data.playlist;
@@ -746,14 +762,6 @@ function GlobalStoreContextProvider(props) {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: playlist
                 });
-                // response = await api.updatePlaylistById(playlist._id, playlist);
-                // if (response.data.success) {
-                //     storeReducer({
-                //         type: GlobalStoreActionType.SET_CURRENT_LIST,
-                //         payload: playlist
-                //     });
-                //     // history.push("/playlist/" + playlist._id);
-                // }
             }
         }
         asyncSetCurrentList(id);
