@@ -255,8 +255,9 @@ function ListCard(props) {
             button
         >   
             <Box sx={{display: "flex", p: 1}} style={{flexDirection: 'row', width: '98%',}}>
-
                 {infoBoxElement}
+                {likeButtonAndCount}
+                {dislikeButtonAndCount}
                 {editButtonElement}
                 {deleteButtonElement}
             </Box>

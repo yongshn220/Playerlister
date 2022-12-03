@@ -1,6 +1,8 @@
 import React, { useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth';
 import ListCard from './ListCard.js'
+import CommentCard from './CommentCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
 import MUIEditSongModal from './MUIEditSongModal'
 import MUIRemoveSongModal from './MUIRemoveSongModal'
@@ -14,7 +16,6 @@ import TextField from '@mui/material/TextField';
 import YouTube from 'react-youtube';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import SwitchAccountRoundedIcon from '@mui/icons-material/SwitchAccountRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
@@ -22,6 +23,9 @@ import FastRewindRoundedIcon from '@mui/icons-material/FastRewindRounded';
 import FastForwardRoundedIcon from '@mui/icons-material/FastForwardRounded';
 import StopRoundedIcon from '@mui/icons-material/StopRounded';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
+import SortRoundedIcon from '@mui/icons-material/SortRounded';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -29,6 +33,7 @@ import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
 
     useEffect(() => {
         store.loadIdNamePairs();
@@ -55,6 +60,13 @@ const HomeScreen = () => {
         const formData = new FormData(event.currentTarget);
         store.searchPublishedPlaylist(formData.get('search-playlist'));
     }
+    const handleOnComment = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        let userName = auth.getUserName();
+        store.addCommentOnPlaylist(userName, formData.get('list-add-comment'))
+        document.getElementById("list-add-comment").value = ""
+    }
     function onPlayerPauseClick() {
         if(youtubeEventTarget){
             youtubeEventTarget.stopVideo();
@@ -73,8 +85,11 @@ const HomeScreen = () => {
         currentSong = store.getCurrentListSongs().length - 1;
         loadAndPlayCurrentSong(youtubeEventTarget);
     }
-// LISTCARD SETTING-------------------------------------------------------
+    function handleSortClick() {
+        
+    }
 
+// LISTCARD SETTING-------------------------------------------------------
     let listCard = "";
     if (store) {
         if (store.currentList != null)
@@ -134,7 +149,7 @@ const HomeScreen = () => {
                     videoId={playlist[currentSong]}
                     opts={playerOptions}
                     onReady={onPlayerReady}
-                    onStateChange={onPlayerStateChange} />;
+                    onStateChange={onPlayerStateChange} />
                 <div id="youtube-player-info">
                 
                 </div>
@@ -162,10 +177,31 @@ const HomeScreen = () => {
                 </div>
             </Box>
             
-                
-
+    }
+    if (store.hasSongsInCurrentList() && store.currentList.published)
+    {
         commentsElement = 
             <div id="list-comments" className="disabled">
+                <List sx={{borderRadius: "1px", overflow: 'scroll', height: '80%', width: '100%', mb:"10px" }}>
+                {
+                    store.currentList.comments.map((comment) => (
+                        <CommentCard
+                            writer={comment.name}
+                            content={comment.content}
+                        />
+                    ))                    
+                }
+                </List>
+                <Box
+                    id="add-comment-box"
+                    component="form"
+                    sx={{'& > :not(style)': { m: 1, width: '50ch', height: '4ch'},}}
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleOnComment}
+                >
+                    <TextField id="list-add-comment" name="list-add-comment" label="Comment" variant="outlined" />
+                </Box>
             </div>
     }
 
@@ -190,7 +226,6 @@ const HomeScreen = () => {
 
     function onPlayerReady(event) {
         loadAndPlayCurrentSong(event.target);
-        console.log("@@@@@@@@@@@@@@");
         console.log(event.target);
         event.target.playVideo();
         youtubeEventTarget = event.target;
@@ -230,7 +265,16 @@ const HomeScreen = () => {
         document.getElementById("youtube-player").classList.add("disabled");
         document.getElementById("list-comments").classList.remove("disabled");
     }
-
+    function isCommentsValid() {
+        if (store.currentList)
+        {
+            if (store.currentList.published)
+            {
+                return true
+            }
+        }
+        return false
+    }
 // MODAL --------------------------------------------------------
     let modalJSX = "";
     if (store.isEditSongModalOpen()) {
@@ -242,6 +286,17 @@ const HomeScreen = () => {
     else if (store.isPublishListModalOpen()) {
         modalJSX = <MUIPublishListModal />;
     }
+
+// B-------------
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+    setAnchorEl(null);
+    };
+
 
 // RETURN --------------------------------------------------------
     return (
@@ -277,7 +332,34 @@ const HomeScreen = () => {
                     </Box>
                 </div>
                 <div id="list-selector-heading-right">
-                    test2
+
+                    <div>
+                        SORT BY
+                        <IconButton  onClick={handleClick} aria-label='edit'>
+                            <SortRoundedIcon style={{fontSize:'25pt'}} />
+                        </IconButton>
+                        <Menu
+                            id="demo-positioned-menu"
+                            aria-labelledby="demo-positioned-button"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                            }}
+                        >
+                            <MenuItem onClick={handleClose}>Alphabetical</MenuItem>
+                            <MenuItem onClick={handleClose}>Publish Date</MenuItem>
+                            <MenuItem onClick={handleClose}>Listens</MenuItem>
+                            <MenuItem onClick={handleClose}>Likes</MenuItem>
+                            <MenuItem onClick={handleClose}>Dislikes</MenuItem>
+                        </Menu>
+                    </div>
                 </div>
             </div>
             
@@ -293,14 +375,12 @@ const HomeScreen = () => {
                     <Button disabled={store.isCurrentListNull()} id='list-player-button' onClick={onPlayerClick} variant="contained">
                         Player
                     </Button>
-                    <Button disabled={store.isCurrentListNull()} id='list-comments-button' onClick={onCommentsClick} variant="contained">
+                    <Button disabled={!isCommentsValid()} id='list-comments-button' onClick={onCommentsClick} variant="contained">
                         Comments
                     </Button>
                     
                     {youtubeElement}
-                    {commentsElement}
-
-                    
+                    {commentsElement}                    
                 </div>
             </div>
 

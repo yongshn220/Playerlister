@@ -428,7 +428,21 @@ function GlobalStoreContextProvider(props) {
         }
     }
     
-
+    store.addCommentOnPlaylist = function(writer, content) {
+        async function asyncAddCommentOnPlayer() {
+            let comment = {name: writer, content: content}
+            store.currentList.comments.push(comment);
+            let response = await api.addCommentOnList(store.currentList._id, comment)
+            if (response.data.success) {
+                let playlist = response.data.playlist;
+                storeReducer({
+                    type:GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: store.currentList,
+                });
+            }
+        }
+        asyncAddCommentOnPlayer();
+    }
     //
 
     store.tryAcessingOtherAccountPlaylist = function(){

@@ -170,7 +170,7 @@ body {
 #list-selector-heading-right{
   flex: 1 1 auto;
   height: 100%;
-  background-color: red;
+  font-size: 15px;
 }
 
 #add-list-button {
@@ -240,11 +240,27 @@ body {
   position: absolute;
   width: 100%;
   height: 90%;
-  background-color: blue;
+  background-color: rgb(201, 201, 201);
+}
+
+.comment-card {
+  font-size: 10pt;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: white;
+}
+
+#add-comment-box {
+  position: absolute;
+}
+
+#list-add-comment {
+  border-radius: 5px;
 }
 
 #list-comments.disabled {
-  width: 0%
+  left: -1000%
 }
 
 .list-card,
