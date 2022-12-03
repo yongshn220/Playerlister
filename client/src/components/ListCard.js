@@ -91,7 +91,7 @@ function ListCard(props) {
         store.showPublishListModal();
     }
     function handleDuplicate() {
-
+        store.duplicateList(idNamePair)
     }
 
     function loadSongs() {
@@ -172,29 +172,30 @@ function ListCard(props) {
 // INFO BoX ELEMENT
     let infoBoxElement = 
         <Box sx={{p: 1, flexGrow: 1}}>
-            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+            <Box sx={{ p: 1, flexGrow: 1 }} >{idNamePair.name}</Box>
             <Box sx={{ p: 1, flexGrow: 1 }} style={{fontSize: 15}}>By: {idNamePair.ownerFirstName} {idNamePair.ownerLastName}</Box>
         </Box>
 
     if (published) {
         infoBoxElement = 
         <Box sx={{p: 1, flexGrow: 1}}>
-            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+            <Box sx={{ p: 1, flexGrow: 1 }} style={{fontSize: 20, fontWeight: 800}}>{idNamePair.name}</Box>
             <Box sx={{ p: 1, flexGrow: 1 }} style={{fontSize: 15}}>By: {idNamePair.ownerFirstName} {idNamePair.ownerLastName}</Box>
-            <Box sx={{ p: 1, flexGrow: 1 }} style={{fontSize: 15}}>Published: {idNamePair.publishedDate}</Box>
+            <Box sx={{ p: 1, flexGrow: 1 }} style={{fontSize: 15, color: "blue"}}>Published: {idNamePair.publishedDate}</Box>
         </Box>
     }
 
     let editButtonElement = null
     let deleteButtonElement = null
-    if (store.isScreenHomeView()) {
+    if (!published) {
         editButtonElement = 
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
                     <EditIcon style={{fontSize:'20pt'}} />
                 </IconButton>
             </Box>
-
+    }
+    if (store.isScreenHomeView()) {
         deleteButtonElement = 
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={(event) => {
@@ -229,6 +230,11 @@ function ListCard(props) {
             </Box>
     }
 
+    let listensElement = 
+        <Box sx={{ p: 1}} style={{fontSize: '12pt'}}>
+            listens: {idNamePair.listens}
+        </Box>
+
     let cardElement =
         <ListItem
             id={idNamePair._id}
@@ -241,6 +247,7 @@ function ListCard(props) {
             }}
         >   
             {infoBoxElement}
+            {listensElement}
             {likeButtonAndCount}
             {dislikeButtonAndCount}
             {editButtonElement}
@@ -258,6 +265,7 @@ function ListCard(props) {
         >   
             <Box sx={{display: "flex", p: 1}} style={{flexDirection: 'row', width: '98%',}}>
                 {infoBoxElement}
+                {listensElement}
                 {likeButtonAndCount}
                 {dislikeButtonAndCount}
                 {editButtonElement}

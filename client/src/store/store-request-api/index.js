@@ -34,6 +34,7 @@ export const createPlaylist = (newListName, newSongs, userFirstName, userLastNam
         publishedDate: "N/A",
         likes: 0,
         dislikes: 0,
+        listens: 0,
         comments: []
     })
 }

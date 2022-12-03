@@ -347,7 +347,6 @@ function GlobalStoreContextProvider(props) {
                 return store;
         }
     }
-
     //
 
     store.reloadStore = function() {
@@ -389,8 +388,7 @@ function GlobalStoreContextProvider(props) {
             let today = new Date();
             list.publishedDate = today.toLocaleDateString("en-US");
         }
-        store.updateCurrentList();
-        store.loadIdNamePairs();
+        store.updateCurrentList(store.showHomeView);
     }
 
     store.showHomeView = function() {
@@ -492,6 +490,22 @@ function GlobalStoreContextProvider(props) {
         }
         asyncUpdateList();
     }
+
+    store.duplicateList = function(list) {
+        async function asyncDuplicateList(){
+            const response = await api.createPlaylist(list.name, list.song, auth.user.firstName, auth.user.lastName, auth.user.email);
+            if (response.status === 201) {
+                tps.clearAllTransactions();
+                let newList = response.data.playlist;
+                store.loadIdNamePairs();
+            }
+            else {
+                console.log("API FAILED TO CREATE A NEW LIST");
+            }
+        }
+        asyncDuplicateList();
+    } 
+    
     //
 
     store.tryAcessingOtherAccountPlaylist = function(){
@@ -841,7 +855,7 @@ function GlobalStoreContextProvider(props) {
         let transaction = new UpdateSong_Transaction(this, index, oldSongData, newSongData);        
         tps.addTransaction(transaction);
     }
-    store.updateCurrentList = function() {
+    store.updateCurrentList = function(callback) {
         async function asyncUpdateCurrentList() {
             console.log(store.currentList);
             const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
@@ -850,6 +864,9 @@ function GlobalStoreContextProvider(props) {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: store.currentList
                 });
+                if (callback) {
+                    callback();
+                }
             }
         }
         asyncUpdateCurrentList();
