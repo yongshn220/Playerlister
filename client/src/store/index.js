@@ -443,7 +443,36 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.sortPlaylists = function(sortType) {
-        
+        if (sortType == "alphabetical") {
+            store.idNamePairs.sort((a, b) => a.name.localeCompare(b.name))
+        }
+        else if (sortType == "publishDate") {
+            store.idNamePairs.sort((a, b) => {
+                if (a.published && b.published) {
+                    return Date.parse(b.publishedDate) - Date.parse(a.publishedDate)
+                }
+                if (a.published) {
+                    return -1
+                } 
+                else return 1
+            })
+        }
+        else if (sortType == "listens") {
+            store.idNamePairs.sort((a, b) => b.listens - a.listens)
+        }
+        else if (sortType == "likes") {
+            store.idNamePairs.sort((a, b) => b.likes - a.likes)
+        }
+        else if (sortType == "dislikes") {
+            store.idNamePairs.sort((a,b) => b.dislikes - a.dislikes)
+        }
+        else {
+            console.log("wrong type");
+        }
+        storeReducer({
+            type:GlobalStoreActionType.SET_CURRENT_LIST,
+            payload: store.currentList,
+        });
     }
 
     store.addLikeToList = function(id) {

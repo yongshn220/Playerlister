@@ -85,8 +85,8 @@ const HomeScreen = () => {
         currentSong = store.getCurrentListSongs().length - 1;
         loadAndPlayCurrentSong(youtubeEventTarget);
     }
-    function handleSortClick() {
-        
+    function onSortListClick(event) {
+        store.sortPlaylists(event.target.getAttribute('value'));
     }
 
 // LISTCARD SETTING-------------------------------------------------------
@@ -353,11 +353,11 @@ const HomeScreen = () => {
                             horizontal: 'left',
                             }}
                         >
-                            <MenuItem onClick={handleClose}>Alphabetical</MenuItem>
-                            <MenuItem onClick={handleClose}>Publish Date</MenuItem>
-                            <MenuItem onClick={handleClose}>Listens</MenuItem>
-                            <MenuItem onClick={handleClose}>Likes</MenuItem>
-                            <MenuItem onClick={handleClose}>Dislikes</MenuItem>
+                            <MenuItem onClick={onSortListClick} value="alphabetical">Alphabetical</MenuItem>
+                            <MenuItem onClick={onSortListClick} value="publishDate">Publish Date</MenuItem>
+                            <MenuItem onClick={onSortListClick} value="listens">Listens</MenuItem>
+                            <MenuItem onClick={onSortListClick} value="likes">Likes</MenuItem>
+                            <MenuItem onClick={onSortListClick} value="dislikes">Dislikes</MenuItem>
                         </Menu>
                     </div>
                 </div>
