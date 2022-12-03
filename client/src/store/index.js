@@ -574,37 +574,50 @@ function GlobalStoreContextProvider(props) {
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME
+    // store.changeListName = function (id, newName) {
+    //     // GET THE LIST
+    //     async function asyncChangeListName(id) {
+    //         let response = await api.getPlaylistById(id);
+    //         if (response.data.success) {
+    //             let playlist = response.data.playlist;
+    //             playlist.name = newName;
+    //             async function updateList(playlist) {
+    //                 response = await api.updatePlaylistById(playlist._id, playlist);
+    //                 if (response.data.success) {
+    //                     async function getListPairs(playlist) {
+    //                         response = await api.getPlaylistPairs();
+    //                         if (response.data.success) {
+    //                             let pairsArray = response.data.idNamePairs;
+    //                             storeReducer({
+    //                                 type: GlobalStoreActionType.CHANGE_LIST_NAME,
+    //                                 payload: {
+    //                                     idNamePairs: pairsArray,
+    //                                     playlist: playlist
+    //                                 }
+    //                             });
+    //                             store.setCurrentList(id);
+    //                         }
+    //                     }
+    //                     getListPairs(playlist);
+    //                 }
+    //             }
+    //             updateList(playlist);
+    //         }
+    //     }
+    //     asyncChangeListName(id);
+    // }
     store.changeListName = function (id, newName) {
-        // GET THE LIST
-        async function asyncChangeListName(id) {
-            let response = await api.getPlaylistById(id);
-            if (response.data.success) {
-                let playlist = response.data.playlist;
-                playlist.name = newName;
-                async function updateList(playlist) {
-                    response = await api.updatePlaylistById(playlist._id, playlist);
-                    if (response.data.success) {
-                        async function getListPairs(playlist) {
-                            response = await api.getPlaylistPairs();
-                            if (response.data.success) {
-                                let pairsArray = response.data.idNamePairs;
-                                storeReducer({
-                                    type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                                    payload: {
-                                        idNamePairs: pairsArray,
-                                        playlist: playlist
-                                    }
-                                });
-                                store.setCurrentList(id);
-                            }
-                        }
-                        getListPairs(playlist);
-                    }
-                }
-                updateList(playlist);
+        let ind = -1
+        for (let i = 0; i < store.idNamePairs.length; i++) {
+            if (store.idNamePairs[i]._id == id) {
+                ind = i;
+                store.idNamePairs[i].name = newName;
+                break;
             }
         }
-        asyncChangeListName(id);
+        if (ind != -1) {
+            store.updateList(id, store.idNamePairs[ind]);
+        }
     }
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST

@@ -268,7 +268,18 @@ const HomeScreen = () => {
     function isCommentsValid() {
         if (store.currentList)
         {
-            if (store.currentList.published)
+            if (store.currentList.published && store.currentList.songs.length > 0)
+            {
+                return true
+            }
+        }
+        return false
+    }
+
+    function isPlayerValid() {
+        if (store.currentList)
+        {
+            if (store.currentList.songs.length > 0)
             {
                 return true
             }
@@ -372,7 +383,7 @@ const HomeScreen = () => {
 
             <div id="list-content-box">
                 <div>
-                    <Button disabled={store.isCurrentListNull()} id='list-player-button' onClick={onPlayerClick} variant="contained">
+                    <Button disabled={!isPlayerValid()} id='list-player-button' onClick={onPlayerClick} variant="contained">
                         Player
                     </Button>
                     <Button disabled={!isCommentsValid()} id='list-comments-button' onClick={onCommentsClick} variant="contained">
