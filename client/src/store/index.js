@@ -443,6 +443,55 @@ function GlobalStoreContextProvider(props) {
         }
         asyncAddCommentOnPlayer();
     }
+
+    store.sortPlaylists = function(sortType) {
+        
+    }
+
+    store.addLikeToList = function(id) {
+
+        let ind = -1
+        for (let i = 0; i < store.idNamePairs.length; i++) {
+            if (store.idNamePairs[i]._id == id) {
+                ind = i;
+                store.idNamePairs[i].likes += 1;
+                break;
+            }
+        }
+        if (ind != -1) {
+            store.updateList(id, store.idNamePairs[ind]);
+        }
+    }
+
+    store.addDislikeToList = function(id) {
+        let ind = -1
+        for (let i = 0; i < store.idNamePairs.length; i++) {
+            if (store.idNamePairs[i]._id == id) {
+                ind = i;
+                store.idNamePairs[i].dislikes += 1;
+                break;
+            }
+        }
+        if (ind != -1) {
+            store.updateList(id, store.idNamePairs[ind]);
+        }
+    }
+
+    store.updateList = function(id, list) {
+        async function asyncUpdateList() {
+            const response = await api.updatePlaylistById(id, list);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: store.currentList
+                });
+            }
+            else {
+                console.log("fail");
+            }
+        }
+        asyncUpdateList();
+    }
     //
 
     store.tryAcessingOtherAccountPlaylist = function(){

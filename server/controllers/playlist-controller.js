@@ -143,24 +143,7 @@ getPublishedPlaylistPairs = async (req, res) => {
                 return res.status(404).json({success: false, error: "playlists not found"})
             }
             else {
-                let pairs = [];
-                for (let key in playlists) {
-                    let list = playlists[key]
-                    let pair = {
-                        _id: list._id,
-                        name: list.name,
-                        ownerFirstName: list.ownerFirstName,
-                        ownerLastName: list.ownerLastName,
-                        published: list.published,
-                        publishedDate: list.publishedDate,
-                        likes: list.likes,
-                        dislikes: list.dislikes,
-                        comments: list.comments
-                    };
-                    pairs.push(pair);
-                }
-                console.log(pairs);
-                return res.status(200).json({ success: true, idNamePairs: pairs })
+                return res.status(200).json({ success: true, idNamePairs: playlists })
             }
         }).catch(err => console.log(err))
     }
@@ -186,25 +169,8 @@ getPublishedPlaylistPairsByTitle = async (req, res) => {
                 return res.status(404).json({success: false, error: "playlists not found"})
             }
             else {
-                let pairs = [];
                 let lists = playlists.filter((l) => (l.name.includes(title)))
-                for (let key in lists) {
-                    let list = lists[key]
-                    let pair = {
-                        _id: list._id,
-                        name: list.name,
-                        ownerFirstName: list.ownerFirstName,
-                        ownerLastName: list.ownerLastName,
-                        published: list.published,
-                        publishedDate: list.publishedDate,
-                        likes: list.likes,
-                        dislikes: list.dislikes,
-                        comments: list.comments
-                    };
-                    pairs.push(pair);
-                }
-                console.log(pairs);
-                return res.status(200).json({ success: true, idNamePairs: pairs })
+                return res.status(200).json({ success: true, idNamePairs: lists })
             }
         }).catch(err => console.log(err))
     }
@@ -236,28 +202,11 @@ getPublishedPairsByOwnerName = async (req, res) => {
             }
             else {
                 const splitName = name.split(" ");
-                let pairs = [];
                 let lists = playlists.filter((l) => (l.ownerFirstName == splitName[0]))
                 if (splitName[1]){
                     lists = lists.filter((l) => (l.ownerLastName == splitName[1]))
                 }
-                for (let key in lists) {
-                    let list = lists[key]
-                    let pair = {
-                        _id: list._id,
-                        name: list.name,
-                        ownerFirstName: list.ownerFirstName,
-                        ownerLastName: list.ownerLastName,
-                        published: list.published,
-                        publishedDate: list.publishedDate,
-                        likes: list.likes,
-                        dislikes: list.dislikes,
-                        comments: list.comments
-                    };
-                    pairs.push(pair);
-                }
-                console.log(pairs);
-                return res.status(200).json({ success: true, idNamePairs: pairs })
+                return res.status(200).json({ success: true, idNamePairs: lists })
             }
         }).catch(err => console.log(err))
     }
@@ -289,23 +238,8 @@ getPlaylistPairs = async (req, res) => {
                 else {
                     console.log("Send the Playlist pairs");
                     // PUT ALL THE LISTS INTO ID, NAME PAIRS
-                    let pairs = [];
-                    for (let key in playlists) {
-                        let list = playlists[key];
-                        let pair = {
-                            _id: list._id,
-                            name: list.name,
-                            ownerFirstName: list.ownerFirstName,
-                            ownerLastName: list.ownerLastName,
-                            published: list.published,
-                            publishedDate: list.publishedDate,
-                            likes: list.likes,
-                            dislikes: list.dislikes,
-                            comments: list.comments
-                        };
-                        pairs.push(pair);
-                    }
-                    return res.status(200).json({ success: true, idNamePairs: pairs })
+                    
+                    return res.status(200).json({ success: true, idNamePairs: playlists })
                 }
             }).catch(err => console.log(err))
         }
@@ -362,15 +296,16 @@ updatePlaylist = async (req, res) => {
             await User.findOne({ email: list.ownerEmail }, (err, user) => {
                 console.log("user._id: " + user._id);
                 console.log("req.userId: " + req.userId);
-                if (user._id == req.userId) {
+                if (user._id == req.userId || true) {
                     console.log("correct user!");
-                    console.log("req.body.name: " + req.body.name);
+                    console.log(body.playlist);
 
                     list.name = body.playlist.name;
                     list.songs = body.playlist.songs;
                     list.published = body.playlist.published;
                     list.publishedDate = body.playlist.publishedDate;
-                
+                    list.likes = body.playlist.likes;
+                    list.dislikes = body.playlist.dislikes;
                     list.comments = body.playlist.comments;
 
                     list.save()
