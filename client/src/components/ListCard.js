@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
+import AuthContext from '../auth';
 import SongCard from './SongCard.js'
 import EditToolbar from './EditToolbar'
 import Box from '@mui/material/Box';
@@ -26,6 +27,7 @@ import ThumbDownAltRoundedIcon from '@mui/icons-material/ThumbDownAltRounded';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext)
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected, published } = props;
@@ -68,6 +70,7 @@ function ListCard(props) {
     function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
+            
             store.changeListName(id, text);
             toggleEdit();
         }
@@ -132,10 +135,10 @@ function ListCard(props) {
             <Button disabled={!store.canClose()} id='close-button' onClick={handleClose} variant="contained">
                 <ArrowDropUpIcon />
             </Button>
-            <Button disabled={false} id='publish-button' onClick={handlePublish} variant="contained">
+            <Button disabled={auth.guest} id='publish-button' onClick={handlePublish} variant="contained">
                 Publish
             </Button>
-            <Button disabled={false} id='duplicate-button' onClick={handleDuplicate} variant="contained">
+            <Button disabled={auth.guest} id='duplicate-button' onClick={handleDuplicate} variant="contained">
                 Duplicate
             </Button>
         </div>
@@ -146,7 +149,7 @@ function ListCard(props) {
                         <Button disabled={!store.canClose()} id='close-button' onClick={handleClose} variant="contained">
                             <ArrowDropUpIcon />
                         </Button>
-                        <Button disabled={false} id='duplicate-button' onClick={handleDuplicate} variant="contained">
+                        <Button disabled={auth.guest} id='duplicate-button' onClick={handleDuplicate} variant="contained">
                             Duplicate
                         </Button>
             </div>
@@ -191,7 +194,7 @@ function ListCard(props) {
     if (!published) {
         editButtonElement = 
             <Box sx={{ p: 1 }}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                <IconButton disabled={auth.guest} onClick={handleToggleEdit} aria-label='edit'>
                     <EditIcon style={{fontSize:'20pt'}} />
                 </IconButton>
             </Box>
@@ -199,7 +202,7 @@ function ListCard(props) {
     if (store.isScreenHomeView()) {
         deleteButtonElement = 
             <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
+                <IconButton disabled={auth.guest} onClick={(event) => {
                         handleDeleteList(event, idNamePair._id)
                     }} aria-label='delete'>
                     <DeleteIcon style={{fontSize:'20pt'}} />
@@ -216,7 +219,7 @@ function ListCard(props) {
     if (published) {
         likeButtonAndCount = 
             <Box sx={{ p: 1}}>
-                <IconButton onClick={onLikeClick} aria-label='edit'>
+                <IconButton disabled={auth.guest} onClick={onLikeClick} aria-label='edit'>
                     <ThumbUpAltRoundedIcon style={{fontSize:'20pt'}} />
                 </IconButton>
                 {idNamePair.likes}
@@ -224,7 +227,7 @@ function ListCard(props) {
 
         dislikeButtonAndCount = 
             <Box sx={{ p: 1}}>
-                <IconButton onClick={onDislikeClick} aria-label='edit'>
+                <IconButton disabled={auth.guest} onClick={onDislikeClick} aria-label='edit'>
                     <ThumbDownAltRoundedIcon style={{fontSize:'20pt'}} />
                 </IconButton>
                 {idNamePair.dislikes}

@@ -35,7 +35,7 @@ export default function LoginScreen() {
         }
         if (submitState.type == "guest")
         {
-            console.log("Guest");
+            auth.loginGuest();
         }
     };
 

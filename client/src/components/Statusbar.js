@@ -24,7 +24,6 @@ function Statusbar() {
         text = store.currentList.name;
     return (
         <div id="playlister-statusbar">
-            {text}
         </div>
     );
     }

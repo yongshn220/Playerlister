@@ -81,6 +81,7 @@ function GlobalStoreContextProvider(props) {
 
     // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
     const { auth } = useContext(AuthContext);
+
     console.log("auth: " + auth);
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
@@ -400,6 +401,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.showAllUserView = function() {
+        console.log("(1)");
         store.loadPublishedPairs(CurrentHomeState.ALL_USER);
         storeReducer({
             type: GlobalStoreActionType.SHOW_ALL_USER,
@@ -517,7 +519,9 @@ function GlobalStoreContextProvider(props) {
                 const response = await api.updatePlaylistById(id, store.idNamePairs[ind]);
             }
         }
-        asyncUpdateListNoReload();
+        if (!auth.guest) {
+            asyncUpdateListNoReload();
+        }
     }
 
     store.updateList = function(id, list) {
@@ -660,7 +664,9 @@ function GlobalStoreContextProvider(props) {
                 console.log("API FAILED TO GET THE LIST PAIRS");
             }
         }
-        asyncLoadIdNamePairs();
+        if (!auth.guest){
+            asyncLoadIdNamePairs();
+        }
     }
 
     store.loadPublishedPairs = function () {
@@ -919,7 +925,9 @@ function GlobalStoreContextProvider(props) {
                 }
             }
         }
-        asyncUpdateCurrentList();
+        if (!auth.guest) {
+            asyncUpdateCurrentList();
+        }
     }
     store.undo = function () {
         tps.undoTransaction();

@@ -32,13 +32,19 @@ import MenuItem from '@mui/material/MenuItem';
     @author McKilla Gorilla
 */
 const HomeScreen = () => {
+    console.log("IN");
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
 
     useEffect(() => {
-        store.loadIdNamePairs();
+        if (auth.guest) {
+            store.showAllUserView();
+        }
+        else {
+            store.loadIdNamePairs();
+        }
     }, []);
-
+    
 // EVENT HANDLER ---------------------------------------------------------
     function handleCreateNewList() {
         store.createNewList();
@@ -65,7 +71,7 @@ const HomeScreen = () => {
         const formData = new FormData(event.currentTarget);
         let userName = auth.getUserName();
         store.addCommentOnPlaylist(userName, formData.get('list-add-comment'))
-        document.getElementById("list-add-comment").value = ""
+        document.getElementById("list-add-comment").value = "";
     }
     function onPlayerPauseClick() {
         if(youtubeEventTarget){
@@ -77,11 +83,11 @@ const HomeScreen = () => {
             youtubeEventTarget.playVideo();
         }
     }
-    function onMoveToFirstSongClick(){
+    function onMoveToFirstSongClick() {
         currentSong = 0;
         loadAndPlayCurrentSong(youtubeEventTarget);
     }
-    function onMoveToLastSongClick(){
+    function onMoveToLastSongClick() {
         currentSong = store.getCurrentListSongs().length - 1;
         loadAndPlayCurrentSong(youtubeEventTarget);
     }
@@ -178,19 +184,24 @@ const HomeScreen = () => {
             </Box>
             
     }
+    console.log("3")
+
     if (store.hasSongsInCurrentList() && store.currentList.published)
     {
+        let listComments = 
+        store.currentList.comments.map((comment) => (
+            <CommentCard
+                writer={comment.name}
+                content={comment.content}
+            />
+        ))  
+        // if (auth.guest) {
+        //     listComments = null
+        // }
         commentsElement = 
             <div id="list-comments" className="disabled">
                 <List sx={{borderRadius: "1px", overflow: 'scroll', height: '80%', width: '100%', mb:"10px" }}>
-                {
-                    store.currentList.comments.map((comment) => (
-                        <CommentCard
-                            writer={comment.name}
-                            content={comment.content}
-                        />
-                    ))                    
-                }
+                    {listComments}
                 </List>
                 <Box
                     id="add-comment-box"
@@ -200,10 +211,11 @@ const HomeScreen = () => {
                     autoComplete="off"
                     onSubmit={handleOnComment}
                 >
-                    <TextField id="list-add-comment" name="list-add-comment" label="Comment" variant="outlined" />
+                    <TextField disabled={auth.guest} id="list-add-comment" name="list-add-comment" label="Comment" variant="outlined" />
                 </Box>
             </div>
     }
+    console.log("4")
 
     function loadAndPlayCurrentSong(player) {
         console.log("load new cong");
@@ -286,6 +298,8 @@ const HomeScreen = () => {
         }
         return false
     }
+
+    console.log("4")
 // MODAL --------------------------------------------------------
     let modalJSX = "";
     if (store.isEditSongModalOpen()) {
@@ -298,6 +312,7 @@ const HomeScreen = () => {
         modalJSX = <MUIPublishListModal />;
     }
 
+    console.log("5")
 // B-------------
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -309,13 +324,15 @@ const HomeScreen = () => {
     };
 
 
+    console.log("6")
+
 // RETURN --------------------------------------------------------
     return (
         <div id="playlist-selector">
             <div id="list-selector-heading">
                 <div id="list-selector-heading-left">
                     <Box sx={{ p: 1}}>
-                        <IconButton  onClick={handleHomeClick} aria-label='edit'>
+                        <IconButton disabled={auth.guest} onClick={handleHomeClick} aria-label='edit'>
                             <HomeRoundedIcon style={{fontSize:'25pt'}} />
                         </IconButton>
                     </Box>
@@ -400,6 +417,7 @@ const HomeScreen = () => {
                     aria-label="add"
                     id="add-list-button"
                     onClick={handleCreateNewList}
+                    disabled={auth.guest}
                 >
                     <AddIcon />
             </Fab>

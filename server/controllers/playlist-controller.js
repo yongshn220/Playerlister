@@ -89,11 +89,11 @@ deletePlaylist = async (req, res) => {
     })
 }
 getPlaylistById = async (req, res) => {
-    if(auth.verifyUser(req) === null){
-        return res.status(400).json({
-            errorMessage: 'UNAUTHORIZED'
-        })
-    }
+    // if(auth.verifyUser(req) === null){
+    //     return res.status(400).json({
+    //         errorMessage: 'UNAUTHORIZED'
+    //     })
+    // }
     console.log("Find Playlist with id: " + JSON.stringify(req.params.id));
 
     await Playlist.findById({ _id: req.params.id }, (err, list) => {
@@ -126,11 +126,11 @@ getPlaylistById = async (req, res) => {
 
 getPublishedPlaylistPairs = async (req, res) => {
     console.log("get published plyaer list piars : ");
-    if (auth.verifyUser(req) === null) {
-        return res.status(400).json({
-            errorMessage: 'UNAUTHORIZED'
-        })
-    }
+    // if (auth.verifyUser(req) === null) {
+    //     return res.status(400).json({
+    //         errorMessage: 'UNAUTHORIZED'
+    //     })
+    // }
 
     async function findPublishedListPairs(){
         await Playlist.find({published: true}, (err, playlists) => {
@@ -152,11 +152,6 @@ getPublishedPlaylistPairs = async (req, res) => {
 
 getPublishedPlaylistPairsByTitle = async (req, res) => {
     console.log("get published plyaer list piars : ");
-    if (auth.verifyUser(req) === null) {
-        return res.status(400).json({
-            errorMessage: 'UNAUTHORIZED'
-        })
-    }
 
     async function findPublishedListPairsByTitle(title){
         await Playlist.find({published: true, }, (err, playlists) => {
@@ -179,11 +174,6 @@ getPublishedPlaylistPairsByTitle = async (req, res) => {
 
 getPublishedPairsByOwnerName = async (req, res) => {
     console.log("getgetPublishedPairsByOwnerName");
-    if (auth.verifyUser(req) === null) {
-        return res.status(400).json({
-            errorMessage: 'UNAUTHORIZED'
-        })
-    }
 
     async function findPublishedPairsByOwnerName(name){
         console.log("server (1)");
