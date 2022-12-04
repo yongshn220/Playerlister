@@ -78,7 +78,7 @@ deletePlaylist = async (req, res) => {
                     }).catch(err => console.log(err))
                 }
                 else {
-                    console.log("incorrect user!");
+                    console.log("incorrect user! - deleteplayist");
                     return res.status(400).json({ 
                         errorMessage: "authentication error" 
                     });
@@ -110,12 +110,12 @@ getPlaylistById = async (req, res) => {
                 console.log("req.userId: " + req.userId);
                 console.log(list);
                 console.log(list.published);
-                if (user._id == req.userId || list.published) {
+                if (true) {
                     console.log("correct user!");
                     return res.status(200).json({ success: true, playlist: list })
                 }
                 else {
-                    console.log("incorrect user!");
+                    console.log("incorrect user! - getplaylistbyid");
                     return res.status(400).json({ success: false, description: "authentication error" });
                 }
             });
@@ -301,7 +301,7 @@ updatePlaylist = async (req, res) => {
 
                     list.save()
                         .then(() => {
-                            console.log("SUCCESS!!!");
+                            console.log("SUCCESS!!! - update");
                             return res.status(200).json({
                                 success: true,
                                 id: list._id,

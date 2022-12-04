@@ -96,6 +96,7 @@ export default function AppBanner() {
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
                 <Toolbar>
+                    <div style={{position: "absolute", width: 100, height: 40, backgroundImage: 'url(/playlistlogo.png)', backgroundRepeat: "no-repeat", backgroundSize: "100% 100%"}}></div>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ height: "50px", display: { xs: 'none', md: 'flex' } }}>
                         <IconButton

@@ -270,12 +270,12 @@ const HomeScreen = () => {
     }
 
     function onPlayerClick() {
-        document.getElementById("youtube-player").classList.remove("disabled");
-        document.getElementById("list-comments").classList.add("disabled");
+        document.getElementById("youtube-player")?.classList.remove("disabled");
+        document.getElementById("list-comments")?.classList.add("disabled");
     }
     function onCommentsClick() {
-        document.getElementById("youtube-player").classList.add("disabled");
-        document.getElementById("list-comments").classList.remove("disabled");
+        document.getElementById("youtube-player")?.classList.add("disabled");
+        document.getElementById("list-comments")?.classList.remove("disabled");
     }
     function isCommentsValid() {
         if (store.currentList)

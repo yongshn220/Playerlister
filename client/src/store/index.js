@@ -478,7 +478,6 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.addLikeToList = function(id) {
-
         let ind = -1
         for (let i = 0; i < store.idNamePairs.length; i++) {
             if (store.idNamePairs[i]._id == id) {
@@ -802,6 +801,7 @@ function GlobalStoreContextProvider(props) {
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
     // moveItem, updateItem, updateCurrentList, undo, and redo
     store.setCurrentList = function (id) {
+        console.log("in set currentlist");
         async function asyncSetCurrentList(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
@@ -810,6 +810,10 @@ function GlobalStoreContextProvider(props) {
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
                     payload: playlist
                 });
+                console.log("set current list success");
+            }
+            else {
+                console.log("set current list fail");
             }
         }
         asyncSetCurrentList(id);

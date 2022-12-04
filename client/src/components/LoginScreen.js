@@ -55,7 +55,7 @@ export default function LoginScreen() {
                 sm={4}
                 md={7}
                 sx={{
-                    backgroundImage: 'url(https://static.displate.com/857x1200/displate/2021-09-09/acaf2be9f58d1c05de9e4e47c580ee00_0da6a981d11a923cf24cf3f465fa81cc.jpg)',
+                    backgroundImage: 'url(/background2.jpg)',
                     backgroundRepeat: 'no-repeat',
                     backgroundColor: (t) =>
                         t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
@@ -67,12 +67,18 @@ export default function LoginScreen() {
                 <Box
                     sx={{
                         my: 8,
-                        mx: 4,
+                        mx: 5,
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                     }}
-                >
+                >   
+                    <div style={{fontSize: 35, fontWeight: 1500}}>
+                        Welcome!
+                    </div>
+                    <div style={{fontSize: 20}}>
+                        This is a website where you can make a Youtube playlist!
+                    </div>
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon/>
                     </Avatar>
@@ -127,6 +133,7 @@ export default function LoginScreen() {
                         </Grid>
                         <Copyright sx={{ mt: 5 }} />
                     </Box>
+                    This is a website created by a student developer.
                 </Box>
             </Grid>
             { modalJSX }
